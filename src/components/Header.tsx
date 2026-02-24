@@ -4,6 +4,7 @@ import BrandLogo from "@/components/BrandLogo";
 
 interface HeaderProps {
   cartCount: number;
+  wishlistCount?: number;
   onWishlistClick: () => void;
   onCartClick: () => void;
   onUserClick: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 const Header = ({
   cartCount,
+  wishlistCount = 0,
   onWishlistClick,
   onCartClick,
   onUserClick,
@@ -57,9 +59,14 @@ const Header = ({
             type="button"
             onClick={onWishlistClick}
             aria-label="Open wishlist"
-            className="p-1.5 rounded-full hover:bg-secondary transition-colors"
+            className="p-1.5 rounded-full hover:bg-secondary transition-colors relative"
           >
             <Heart className="w-5 h-5 text-accent" />
+            {wishlistCount > 0 ? (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {wishlistCount > 99 ? "99+" : wishlistCount}
+              </span>
+            ) : null}
           </button>
           <button
             type="button"

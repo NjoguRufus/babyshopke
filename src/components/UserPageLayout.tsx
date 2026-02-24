@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { useCommerce } from "@/context/CommerceContext";
 
 interface UserPageLayoutProps {
   title: string;
@@ -11,13 +12,15 @@ interface UserPageLayoutProps {
 
 const UserPageLayout = ({ title, description, children, cartCount = 0 }: UserPageLayoutProps) => {
   const navigate = useNavigate();
+  const { cartCount: globalCartCount, wishlistCount, openCart, openWishlist } = useCommerce();
 
   return (
     <div className="min-h-screen bg-background">
       <Header
-        cartCount={cartCount}
-        onWishlistClick={() => navigate("/wishlist")}
-        onCartClick={() => navigate("/cart")}
+        cartCount={cartCount || globalCartCount}
+        wishlistCount={wishlistCount}
+        onWishlistClick={openWishlist}
+        onCartClick={openCart}
         onUserClick={() => navigate("/account")}
         onSearchSubmit={(query) =>
           navigate(query.trim() ? `/shop?q=${encodeURIComponent(query.trim())}` : "/shop")

@@ -1,5 +1,4 @@
 import heroBaby from "@/assets/hero-baby.png";
-import { ShieldCheck } from "lucide-react";
 
 interface HeroSectionProps {
   onShopNow: () => void;
@@ -34,18 +33,13 @@ const HeroSection = ({ onShopNow }: HeroSectionProps) => {
               Shop Now
             </button>
 
-            {/* Payment Badges */}
-            <div className="glassmorphism inline-flex flex-col gap-2 p-4 rounded-2xl">
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-sm text-foreground tracking-wide">VISA</span>
-                <span className="text-xs font-bold text-accent bg-accent/10 px-2 py-0.5 rounded">MasterCard</span>
-                <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded">M-Pesa</span>
-                <span className="text-xs text-muted-foreground">Simulated</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-                Safe & Secure Payments
-              </div>
+            {/* Payment Options */}
+            <div className="glassmorphism inline-flex p-3 rounded-2xl">
+              <img
+                src="/paymentoptions.png"
+                alt="Payment options"
+                className="h-11 md:h-14 w-auto object-contain"
+              />
             </div>
           </div>
 

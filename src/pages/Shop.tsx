@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
 import { toast } from "sonner";
 import UserPageLayout from "@/components/UserPageLayout";
+import { useCommerce } from "@/context/CommerceContext";
 import productTeddy from "@/assets/product-teddy.png";
 import productPhone from "@/assets/product-phone.png";
 import productOnesie from "@/assets/product-onesie.png";
@@ -155,8 +156,13 @@ const products: Product[] = [
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [wishlist, setWishlist] = useState<Set<number>>(new Set());
-  const [cartCount, setCartCount] = useState(0);
+  const {
+    addToCart,
+    openCart,
+    openWishlist,
+    toggleWishlist,
+    isWishlisted,
+  } = useCommerce();
 
   const query = (searchParams.get("q") ?? "").trim();
   const normalizedQuery = query.toLowerCase();
@@ -192,33 +198,22 @@ const Shop = () => {
     setSearchParams(next);
   };
 
-  const toggleWishlist = (product: Product) => {
-    setWishlist((prev) => {
-      const next = new Set(prev);
-
-      if (next.has(product.id)) {
-        next.delete(product.id);
-        toast.success(`${product.name} removed from wishlist.`);
-      } else {
-        next.add(product.id);
-        toast.success(`${product.name} added to wishlist.`);
-      }
-
-      return next;
-    });
+  const toggleWishlistItem = (product: Product) => {
+    const added = toggleWishlist(product);
+    toast.success(
+      added
+        ? `${product.name} added to wishlist.`
+        : `${product.name} removed from wishlist.`,
+    );
   };
 
-  const addToCart = (product: Product) => {
-    setCartCount((prev) => prev + 1);
+  const addToCartItem = (product: Product) => {
+    addToCart(product);
     toast.success(`${product.name} added to cart.`);
   };
 
   return (
-    <UserPageLayout
-      title="Shop"
-      description="Browse products by age, category, or search and add favorites to cart."
-      cartCount={cartCount}
-    >
+    <UserPageLayout title="Shop" description="Browse products by age, category, or search and add favorites to cart.">
       <section className="bg-card rounded-2xl border border-border p-4 md:p-5 shadow-soft mb-6">
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
@@ -279,7 +274,7 @@ const Shop = () => {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProducts.map((product) => {
-            const wishlisted = wishlist.has(product.id);
+            const wishlisted = isWishlisted(product.id);
 
             return (
               <article
@@ -294,7 +289,7 @@ const Shop = () => {
                   />
                   <button
                     type="button"
-                    onClick={() => toggleWishlist(product)}
+                    onClick={() => toggleWishlistItem(product)}
                     className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-card/90 border border-border"
                     aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                   >
@@ -330,7 +325,7 @@ const Shop = () => {
 
                 <button
                   type="button"
-                  onClick={() => addToCart(product)}
+                  onClick={() => addToCartItem(product)}
                   className="w-full py-2.5 rounded-full bg-accent text-accent-foreground font-bold"
                 >
                   Add to Cart
@@ -342,18 +337,20 @@ const Shop = () => {
       )}
 
       <div className="mt-6 flex flex-wrap gap-2">
-        <Link
-          to="/cart"
+        <button
+          type="button"
+          onClick={openCart}
           className="px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-bold"
         >
-          View Cart
-        </Link>
-        <Link
-          to="/wishlist"
+          Open Cart Drawer
+        </button>
+        <button
+          type="button"
+          onClick={openWishlist}
           className="px-5 py-2.5 rounded-full border border-border bg-card font-semibold"
         >
-          View Wishlist
-        </Link>
+          Open Wishlist Drawer
+        </button>
       </div>
     </UserPageLayout>
   );

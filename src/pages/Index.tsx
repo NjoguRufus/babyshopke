@@ -6,13 +6,53 @@ import HeroSection from "@/components/HeroSection";
 import CategorySection from "@/components/CategorySection";
 import AgeFilterSection from "@/components/AgeFilterSection";
 import BottomCards from "@/components/BottomCards";
+import { CommerceProduct, useCommerce } from "@/context/CommerceContext";
+import productTeddy from "@/assets/product-teddy.png";
+import productPhone from "@/assets/product-phone.png";
+import productOnesie from "@/assets/product-onesie.png";
+import productStacking from "@/assets/product-stacking.png";
+
+const featuredProductsByName: Record<string, CommerceProduct> = {
+  "Cozy Teddy Bear": {
+    id: 7,
+    name: "Cozy Teddy Bear",
+    price: 1900,
+    image: productTeddy,
+  },
+  "Musical Phone Toy": {
+    id: 5,
+    name: "Musical Phone Toy",
+    price: 1500,
+    image: productPhone,
+  },
+  "Cute Baby Onesie": {
+    id: 108,
+    name: "Cute Baby Onesie",
+    price: 900,
+    image: productOnesie,
+  },
+  "Interactive Stacking Cups": {
+    id: 6,
+    name: "Interactive Stacking Cups",
+    price: 1200,
+    image: productStacking,
+  },
+};
 
 const Index = () => {
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const {
+    cartCount,
+    wishlistCount,
+    addToCart,
+    addToWishlist,
+    removeFromWishlist,
+    isWishlistedByName,
+    openWishlist,
+    openCart,
+  } = useCommerce();
 
   const scrollTo = (sectionId: string) => {
     const section = document.getElementById(sectionId);
@@ -35,21 +75,28 @@ const Index = () => {
   };
 
   const handleWishlistToggle = (productName: string, nextState: boolean) => {
-    setWishlist((prev) => {
-      const next = new Set(prev);
-      if (nextState) {
-        next.add(productName);
-        toast(`${productName} added to wishlist`);
-      } else {
-        next.delete(productName);
-        toast(`${productName} removed from wishlist`);
-      }
-      return next;
-    });
+    const product = featuredProductsByName[productName];
+    if (!product) {
+      return;
+    }
+
+    if (nextState) {
+      addToWishlist(product);
+      toast(`${productName} added to wishlist`);
+      return;
+    }
+
+    removeFromWishlist(product.id);
+    toast(`${productName} removed from wishlist`);
   };
 
   const handleAddToCart = (productName: string) => {
-    setCartCount((prev) => prev + 1);
+    const product = featuredProductsByName[productName];
+    if (!product) {
+      return;
+    }
+
+    addToCart(product);
     toast(`${productName} added to cart`);
   };
 
@@ -61,11 +108,11 @@ const Index = () => {
   };
 
   const handleWishlistClick = () => {
-    navigate("/wishlist");
+    openWishlist();
   };
 
   const handleCartClick = () => {
-    navigate("/cart");
+    openCart();
   };
 
   const handleUserClick = () => {
@@ -76,10 +123,17 @@ const Index = () => {
     navigate("/get-started");
   };
 
+  const featuredWishlist = new Set(
+    Object.keys(featuredProductsByName).filter((productName) =>
+      isWishlistedByName(productName),
+    ),
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header
         cartCount={cartCount}
+        wishlistCount={wishlistCount}
         onWishlistClick={handleWishlistClick}
         onCartClick={handleCartClick}
         onUserClick={handleUserClick}
@@ -90,7 +144,7 @@ const Index = () => {
       <AgeFilterSection
         selectedCategory={selectedCategory}
         searchQuery={searchQuery}
-        wishlist={wishlist}
+        wishlist={featuredWishlist}
         onWishlistToggle={handleWishlistToggle}
         onAddToCart={handleAddToCart}
       />
