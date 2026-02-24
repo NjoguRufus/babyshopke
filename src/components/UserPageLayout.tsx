@@ -19,7 +19,9 @@ const UserPageLayout = ({ title, description, children, cartCount = 0 }: UserPag
         onWishlistClick={() => navigate("/wishlist")}
         onCartClick={() => navigate("/cart")}
         onUserClick={() => navigate("/account")}
-        onSearchSubmit={() => navigate("/")}
+        onSearchSubmit={(query) =>
+          navigate(query.trim() ? `/shop?q=${encodeURIComponent(query.trim())}` : "/shop")
+        }
       />
       <main className="max-w-5xl mx-auto px-4 md:px-8 py-10">
         <div className="mb-6">
@@ -35,4 +37,3 @@ const UserPageLayout = ({ title, description, children, cartCount = 0 }: UserPag
 };
 
 export default UserPageLayout;
-

@@ -62,7 +62,7 @@ const Orders = () => {
       </div>
 
       <div className="mt-4">
-        <Link to="/" className="px-5 py-2.5 rounded-full border border-border bg-card font-semibold">
+        <Link to="/shop" className="px-5 py-2.5 rounded-full border border-border bg-card font-semibold">
           Continue Shopping
         </Link>
       </div>
@@ -71,4 +71,3 @@ const Orders = () => {
 };
 
 export default Orders;
-

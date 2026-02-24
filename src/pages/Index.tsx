@@ -22,7 +22,7 @@ const Index = () => {
   };
 
   const handleShopNow = () => {
-    scrollTo("products");
+    navigate("/shop");
   };
 
   const handleCategorySelect = (category: string) => {

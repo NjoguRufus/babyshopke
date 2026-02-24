@@ -65,18 +65,21 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 72px;
+    min-height: 62px;
 }
 
 .logo {
     display: inline-flex;
     align-items: center;
+    overflow: visible;
 }
 
 .logo img {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
     object-fit: contain;
+    transform: scale(1.28);
+    transform-origin: center;
 }
 
 .search-bar {

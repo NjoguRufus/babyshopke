@@ -1,6 +1,14 @@
 import { FormEvent, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { LogIn, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import UserPageLayout from "@/components/UserPageLayout";
+import {
+  AuthUser,
+  clearStoredAuthUser,
+  getStoredAuthUser,
+  setStoredAuthUser,
+} from "@/lib/auth";
 
 type ChildProfile = {
   id: number;
@@ -9,8 +17,9 @@ type ChildProfile = {
 };
 
 const Account = () => {
-  const [fullName, setFullName] = useState("Jane Wanjiku");
-  const [email] = useState("jane@example.com");
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => getStoredAuthUser());
+  const [fullName, setFullName] = useState(authUser?.fullName ?? "");
+  const email = authUser?.email ?? "";
   const [familyName, setFamilyName] = useState("The Wanjikus");
   const [draftFamilyName, setDraftFamilyName] = useState("The Wanjikus");
   const [children, setChildren] = useState<ChildProfile[]>([
@@ -34,8 +43,59 @@ const Account = () => {
       toast.error("Name is required.");
       return;
     }
+
+    if (authUser) {
+      const updatedUser: AuthUser = {
+        fullName: fullName.trim(),
+        email: authUser.email,
+      };
+      setStoredAuthUser(updatedUser);
+      setAuthUser(updatedUser);
+    }
+
     toast.success("Profile updated.");
   };
+
+  const handleLogout = () => {
+    clearStoredAuthUser();
+    setAuthUser(null);
+    toast.success("You have been logged out.");
+  };
+
+  if (!authUser) {
+    return (
+      <UserPageLayout
+        title="My Account"
+        description="You are not logged in. Create an account or login to continue."
+      >
+        <section className="mx-auto max-w-2xl rounded-[28px] bg-gradient-to-br from-primary/30 via-white/70 to-accent/30 p-[1px] shadow-card">
+          <div className="glassmorphism rounded-[27px] border-white/50 px-6 py-8 md:px-8 md:py-10 text-center">
+            <h2 className="text-2xl font-extrabold text-foreground">You are not logged in</h2>
+            <p className="mt-2 text-muted-foreground">
+              Create an account or login to manage your profile, family, and child accounts.
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground shadow-glow-primary transition hover:brightness-105"
+              >
+                <LogIn className="h-4 w-4" />
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-bold text-accent-foreground shadow-glow-accent transition hover:brightness-105"
+              >
+                <UserPlus className="h-4 w-4" />
+                Create Account
+              </Link>
+            </div>
+          </div>
+        </section>
+      </UserPageLayout>
+    );
+  }
 
   const handleFamilySubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,7 +130,16 @@ const Account = () => {
     <UserPageLayout title="My Account" description="Manage profile, family account, and child profiles.">
       <div className="space-y-6">
         <section className="bg-card rounded-2xl border border-border p-6 shadow-soft">
-          <h2 className="text-xl font-extrabold mb-4">Profile</h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-xl font-extrabold">Profile</h2>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition hover:bg-secondary"
+            >
+              Logout
+            </button>
+          </div>
           <form onSubmit={handleProfileSubmit} className="grid gap-4 md:grid-cols-2">
             <div>
               <label className="block text-sm font-semibold mb-2">Full Name</label>
@@ -175,10 +244,22 @@ const Account = () => {
             ))}
           </div>
         </section>
+
+        <section className="bg-card rounded-2xl border border-border p-6 shadow-soft">
+          <h2 className="text-xl font-extrabold mb-2">Admin</h2>
+          <p className="text-muted-foreground mb-4">
+            Open your management view for products and orders.
+          </p>
+          <Link
+            to="/admin/dashboard"
+            className="inline-flex px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-bold"
+          >
+            Open Admin Dashboard
+          </Link>
+        </section>
       </div>
     </UserPageLayout>
   );
 };
 
 export default Account;
-

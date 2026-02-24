@@ -27,9 +27,9 @@ const Header = ({
   return (
     <header className="w-full">
       {/* Main Nav */}
-      <nav className="bg-card px-4 md:px-8 py-3 flex items-center justify-between gap-4 max-w-[1400px] mx-auto">
+      <nav className="bg-card px-4 md:px-8 h-14 md:h-[58px] flex items-center justify-between gap-4 max-w-[1400px] mx-auto">
         {/* Logo */}
-        <BrandLogo className="shrink-0" imageClassName="w-11 h-11" />
+        <BrandLogo className="shrink-0 overflow-visible" imageClassName="w-9 h-9 scale-[1.45]" />
 
         {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md mx-4">
@@ -57,7 +57,7 @@ const Header = ({
             type="button"
             onClick={onWishlistClick}
             aria-label="Open wishlist"
-            className="p-2 rounded-full hover:bg-secondary transition-colors"
+            className="p-1.5 rounded-full hover:bg-secondary transition-colors"
           >
             <Heart className="w-5 h-5 text-accent" />
           </button>
@@ -65,7 +65,7 @@ const Header = ({
             type="button"
             onClick={onCartClick}
             aria-label="Open cart"
-            className="p-2 rounded-full hover:bg-secondary transition-colors relative"
+            className="p-1.5 rounded-full hover:bg-secondary transition-colors relative"
           >
             <ShoppingCart className="w-5 h-5 text-foreground" />
             <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center">
@@ -76,7 +76,7 @@ const Header = ({
             type="button"
             onClick={onUserClick}
             aria-label="Open account"
-            className="p-2 rounded-full hover:bg-secondary transition-colors"
+            className="p-1.5 rounded-full hover:bg-secondary transition-colors"
           >
             <User className="w-5 h-5 text-foreground" />
           </button>

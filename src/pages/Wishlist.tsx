@@ -38,7 +38,7 @@ const Wishlist = () => {
       {items.length === 0 ? (
         <div className="bg-card rounded-2xl border border-border p-8 shadow-soft">
           <p className="text-muted-foreground mb-4">Your wishlist is empty.</p>
-          <Link to="/" className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-bold">
+          <Link to="/shop" className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-bold">
             Continue Shopping
           </Link>
         </div>
@@ -78,4 +78,3 @@ const Wishlist = () => {
 };
 
 export default Wishlist;
-
