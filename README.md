@@ -1,78 +1,327 @@
-# Welcome to your Lovable project
+🍼 BabyShopKe
+Premium Baby & Kids E-Commerce Platform
+PHP + MySQL Implementation
 
-## Project Structure
+📌 Project Overview
+BabyShopKe is a premium, modern web-based e-commerce platform designed for the online sale of baby and kids products.
 
-- Frontend (React/Vite): `src/`
-- Backend (PHP/MySQL): `backend/`
+The system features:
 
-## Project info
+🛒 Dynamic product catalog
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+👨‍👩‍👧 Family account system
 
-## How can I edit this code?
+🎯 Age-based product recommendations
 
-There are several ways of editing your application.
+🧾 Secure checkout process
 
-**Use Lovable**
+📦 Inventory automation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+🔐 Role-based authentication (User/Admin)
 
-Changes made via Lovable will be committed automatically to this repo.
+This project demonstrates full frontend and backend integration using PHP and MySQL.
 
-**Use your preferred IDE**
+🎨 Brand Identity
+Primary Colors
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Turquoise — #2EC4B6
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Pastel Crimson — #FF6B8A
 
-Follow these steps:
+Light Background — #FFF7F2
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Dark Text — #1F2933
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Design Style:
+Premium, soft, modern baby boutique aesthetic with rounded UI components and subtle shadows.
 
-# Step 3: Install the necessary dependencies.
-npm i
+🛠 Technology Stack
+Frontend
+HTML5
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+CSS3
 
-**Edit a file directly in GitHub**
+JavaScript
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Bootstrap (Responsive UI)
 
-**Use GitHub Codespaces**
+Backend
+PHP (Server-side logic)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+MySQL (Database)
 
-## What technologies are used for this project?
+XAMPP (Local development environment)
 
-This project is built with:
+Development Tools
+VS Code / Cursor / Codex
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+GitHub (Version Control)
 
-## How can I deploy this project?
+Draw.io (ERD)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Figma (UI Design)
 
-## Can I connect a custom domain to my Lovable project?
+⚙ System Features
+👤 Authentication System
+User registration
 
-Yes, you can!
+User login/logout
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Password hashing (password_hash)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Session management
+
+Role-based access control (Admin/User)
+
+👨‍👩‍👧 Family Accounts
+Create family profile
+
+Add child profiles (Name + DOB)
+
+Select active child
+
+Child profile stored in session
+
+Used for age-based product filtering
+
+🛍 Product Management
+Admin Dashboard
+
+Add product
+
+Edit product
+
+Delete product
+
+Manage stock
+
+View orders
+
+Update order status
+
+Products include:
+
+Name
+
+Description
+
+Price
+
+Image
+
+Category
+
+Stock
+
+age_min_months
+
+age_max_months
+
+🎯 Age-Based Recommendation Engine
+Unique Feature of BabyShopKe.
+
+How it works:
+
+System calculates child age in months.
+
+Queries products where:
+
+age_min_months <= child_age <= age_max_months
+Displays "Top Picks for X Months"
+
+If no child selected:
+
+Default recommendation = 6–12 months.
+
+🛒 Shopping Cart
+Add to cart
+
+Update quantity
+
+Remove item
+
+Stock validation
+
+Cart badge counter
+
+Session-based cart
+
+💳 Checkout System
+Customer details form
+
+Delivery option
+
+Payment simulation:
+
+M-Pesa (Simulated)
+
+Cash on Delivery
+
+Order stored in database
+
+Stock auto-updated
+
+Order confirmation page
+
+📦 Orders
+Users can view order history
+
+Admin can:
+
+View all orders
+
+Change status (Pending / Paid / Shipped / Delivered)
+
+🗂 Project Structure
+babyshopke/
+│
+├── config/
+│   ├── db.php
+│   ├── config.php
+│   └── csrf.php
+│
+├── public/
+│   ├── index.php
+│   ├── cart.php
+│   ├── checkout.php
+│   ├── login.php
+│   ├── register.php
+│   ├── family.php
+│   ├── orders.php
+│   └── admin/
+│
+├── includes/
+│   ├── header.php
+│   ├── footer.php
+│   ├── navbar.php
+│   └── auth_guard.php
+│
+├── controllers/
+├── models/
+├── assets/
+│   ├── styles.css
+│   └── app.js
+│
+└── database.sql
+🗄 Database Structure
+Tables:
+
+users
+
+families
+
+family_members
+
+children
+
+products
+
+orders
+
+order_items
+
+Relationships:
+
+User → Family
+
+Family → Children
+
+Orders → Users
+
+Orders → Order Items
+
+Order Items → Products
+
+🚀 Installation Guide (XAMPP)
+Step 1 — Setup Environment
+Install XAMPP
+
+Start Apache & MySQL
+
+Step 2 — Create Database
+Open phpMyAdmin
+
+Create database:
+
+babyshopke
+Import:
+
+database.sql
+Step 3 — Configure Connection
+Edit:
+
+config/db.php
+Update credentials:
+
+$host = "localhost";
+$db   = "babyshopke";
+$user = "root";
+$pass = "";
+Step 4 — Run Project
+Place project folder in:
+
+htdocs/babyshopke
+Open browser:
+
+http://localhost/babyshopke/public/
+🔐 Security Measures
+Password hashing
+
+Prepared statements (PDO)
+
+CSRF tokens
+
+Input validation
+
+Output escaping (htmlspecialchars)
+
+Role-based route protection
+
+📈 Non-Functional Requirements
+Responsive design
+
+Scalable database structure
+
+Secure data handling
+
+Real-time stock updates
+
+System availability via local server
+
+🎓 Academic Objectives Achieved
+✔ Frontend & Backend Integration
+✔ Database CRUD operations
+✔ Dynamic content loading
+✔ E-commerce transaction simulation
+✔ Authentication & Authorization
+✔ Unique Recommendation Engine
+
+👥 Project Team Roles
+Project Manager
+
+UI/UX Designer
+
+Frontend Developer
+
+Backend Developer
+
+Database Administrator
+
+Security Analyst
+
+QA Engineer
+
+📌 Conclusion
+BabyShopKe successfully digitizes baby retail operations by:
+
+Improving product accessibility
+
+Automating inventory management
+
+Securing transaction handling
+
+Enhancing customer experience
+
+Implementing intelligent age-based recommendations
+
+The system demonstrates practical application of e-commerce architecture using PHP and MySQL.
