@@ -1,4 +1,4 @@
-// Baby Shop KE - Minimal JS
+// BabyShopKe - Minimal JS
 document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll for "Shop Now" button
     document.querySelectorAll('a[href="#products"]').forEach(function(el) {

@@ -1,199 +1,73 @@
-# 🍼 BabyShopKe
-Premium Baby & Kids E-Commerce Platform  
-PHP + MySQL + Modern Frontend
+# Welcome to your Lovable project
 
-## 📌 Project Overview
-BabyShopKe is a premium web-based e-commerce platform for baby and kids products.
+## Project info
 
-Core capabilities:
-- 🛒 Dynamic product catalog
-- 👨‍👩‍👧 Family account system
-- 🎯 Age-based product recommendations
-- 🧾 Secure checkout flow
-- 📦 Inventory updates
-- 🔐 Role-based access control (User/Admin)
+**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-## 🎨 Brand Identity
-Primary colors:
-- Turquoise: `#2EC4B6`
-- Pastel Crimson: `#FF6B8A`
-- Light Background: `#FFF7F2`
-- Dark Text: `#1F2933`
+## How can I edit this code?
 
-Design style:
-- Premium, soft, modern baby boutique aesthetic
-- Rounded UI components
-- Subtle shadows and glassmorphism touches
+There are several ways of editing your application.
 
-## 🛠 Technology Stack
-Frontend:
-- HTML5
-- CSS3
-- JavaScript
-- React + Vite (current UI)
+**Use Lovable**
 
-Backend:
-- PHP (server-side logic)
-- MySQL (database)
-- XAMPP (local development)
+Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
 
-Tools:
-- VS Code / Cursor / Codex
-- GitHub
-- Draw.io (ERD)
-- Figma (UI)
+Changes made via Lovable will be committed automatically to this repo.
 
-## ⚙ System Features
-### 👤 Authentication
-- User registration
-- User login/logout
-- Password hashing (`password_hash`)
-- Session management
-- Role-based access (Admin/User)
+**Use your preferred IDE**
 
-### 👨‍👩‍👧 Family Accounts
-- Create family profile
-- Add child profiles (name + DOB)
-- Set active child
-- Active child used for recommendation filtering
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-### 🛍 Product Management (Admin)
-- Dashboard
-- Add/edit/delete products
-- Manage stock
-- View and update orders
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Product fields:
-- Name
-- Description
-- Price
-- Image
-- Category
-- Stock
-- `age_min_months`
-- `age_max_months`
+Follow these steps:
 
-### 🎯 Age-Based Recommendation Engine
-How it works:
-1. System calculates child age in months.
-2. Products are filtered with:
-   `age_min_months <= child_age <= age_max_months`
-3. Shows “Top Picks for X Months”.
-4. If no child is selected, default age range is `6–12 months`.
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-### 🛒 Cart
-- Add to cart
-- Update quantity
-- Remove item
-- Stock validation
-- Cart badge counter
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-### 💳 Checkout
-- Customer details form
-- Delivery option
-- Payment simulation:
-  - M-Pesa (simulated)
-  - Cash on Delivery
-- Order saved to database
-- Stock updated automatically
-- Order confirmation page
+# Step 3: Install the necessary dependencies.
+npm i
 
-### 📦 Orders
-- Users can view order history
-- Admin can:
-  - View all orders
-  - Change status (`Pending`, `Paid`, `Shipped`, `Delivered`)
-
-## 🗂 Project Structure
-```text
-babyshopke/
-├── src/                     # React frontend
-├── public/                  # frontend public assets
-├── backend/                 # PHP + MySQL app
-│   ├── assets/
-│   ├── config/
-│   ├── controllers/
-│   ├── includes/
-│   ├── models/
-│   ├── public/
-│   │   └── admin/
-│   └── database.sql
-└── README.md
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
 ```
 
-## 🗄 Database Structure
-Main tables:
-- `users`
-- `families`
-- `family_members`
-- `children`
-- `products`
-- `orders`
-- `order_items`
+**Edit a file directly in GitHub**
 
-Relationships:
-- User → Family
-- Family → Children
-- Orders → Users
-- Orders → Order Items
-- Order Items → Products
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-## 🚀 Installation Guide (XAMPP)
-1. Install XAMPP and start Apache + MySQL.
-2. Create database `babyshopke` in phpMyAdmin.
-3. Import `backend/database.sql`.
-4. Update DB credentials in `backend/config/db.php`.
-5. Place backend app in:
-   `C:\xampp\htdocs\babyshopke\`
-6. Open:
-   `http://localhost/babyshopke/public/index.php`
+**Use GitHub Codespaces**
 
-Example DB credentials:
-```php
-$host = "localhost";
-$db   = "babyshopke";
-$user = "root";
-$pass = "";
-```
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## 🔐 Security Measures
-- Password hashing
-- Prepared statements (PDO)
-- CSRF tokens
-- Input validation
-- Output escaping (`htmlspecialchars`)
-- Role-based route protection
+## What technologies are used for this project?
 
-## 📈 Non-Functional Requirements
-- Responsive UI
-- Scalable DB structure
-- Secure data handling
-- Real-time stock updates
-- Local server availability (XAMPP)
+This project is built with:
 
-## 🎓 Academic Objectives Achieved
-- ✔ Frontend and backend integration
-- ✔ CRUD operations
-- ✔ Dynamic content loading
-- ✔ E-commerce transaction simulation
-- ✔ Authentication and authorization
-- ✔ Recommendation engine implementation
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
-## 👥 Project Team Roles
-- Project Manager
-- UI/UX Designer
-- Frontend Developer
-- Backend Developer
-- Database Administrator
-- Security Analyst
-- QA Engineer
+## How can I deploy this project?
 
-## 📌 Conclusion
-BabyShopKe digitizes baby retail operations by:
-- Improving product accessibility
-- Automating inventory management
-- Securing transaction handling
-- Enhancing customer experience
-- Delivering intelligent age-based recommendations
+Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
-It demonstrates practical e-commerce architecture using PHP and MySQL.
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)

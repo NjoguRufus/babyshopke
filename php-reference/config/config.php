@@ -3,7 +3,7 @@
  * Site-wide configuration constants
  */
 
-define('SITE_NAME', 'Baby Shop KE');
+define('SITE_NAME', 'BabyShopKe');
 define('SITE_URL', 'http://localhost/babyshopke');
 define('CURRENCY', 'KSH');
 

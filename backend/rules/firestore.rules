@@ -1,0 +1,226 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* -------------------------------
+       HELPER FUNCTIONS
+    --------------------------------*/
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && userDoc().data.role == "admin";
+    }
+
+    function isStaff() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (userDoc().data.role == "staff" || userDoc().data.role == "admin");
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isCustomer(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /* -------------------------------
+       USERS
+    --------------------------------*/
+
+    match /users/{userId} {
+
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.uid == userId;
+
+      allow update: if isOwner(userId) || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       FAMILY ACCOUNTS
+    --------------------------------*/
+
+    match /familyAccounts/{familyId} {
+
+      allow read: if isAdmin()
+        || resource.data.primaryUserId == request.auth.uid
+        || request.auth.uid in resource.data.memberUserIds;
+
+      allow create: if isSignedIn();
+
+      allow update: if isAdmin()
+        || resource.data.primaryUserId == request.auth.uid;
+
+      allow delete: if isAdmin();
+
+      match /children/{childId} {
+
+        allow read: if isAdmin()
+          || get(/databases/$(database)/documents/familyAccounts/$(familyId)).data.primaryUserId == request.auth.uid;
+
+        allow create, update: if isAdmin()
+          || get(/databases/$(database)/documents/familyAccounts/$(familyId)).data.primaryUserId == request.auth.uid;
+
+        allow delete: if isAdmin()
+          || get(/databases/$(database)/documents/familyAccounts/$(familyId)).data.primaryUserId == request.auth.uid;
+      }
+    }
+
+    /* -------------------------------
+       CATEGORIES
+    --------------------------------*/
+
+    match /categories/{categoryId} {
+
+      allow read: if true;
+
+      allow create, update, delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       PRODUCTS
+    --------------------------------*/
+
+    match /products/{productId} {
+
+      allow read: if true;
+
+      allow create, update, delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       PRODUCT VIEWS
+    --------------------------------*/
+
+    match /productViews/{viewId} {
+
+      allow create: if true;
+
+      allow read: if isAdmin();
+
+      allow update, delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       CART
+    --------------------------------*/
+
+    match /carts/{userId} {
+
+      allow read, create, update, delete:
+        if isOwner(userId) || isAdmin();
+    }
+
+    /* -------------------------------
+       WISHLIST
+    --------------------------------*/
+
+    match /wishlists/{wishlistId} {
+
+      allow create: if isSignedIn();
+
+      allow read: if isAdmin()
+        || resource.data.userId == request.auth.uid;
+
+      allow update, delete: if isAdmin()
+        || resource.data.userId == request.auth.uid;
+    }
+
+    /* -------------------------------
+       ORDERS
+    --------------------------------*/
+
+    match /orders/{orderId} {
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow read: if isAdmin()
+        || resource.data.userId == request.auth.uid;
+
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       PAYMENT TRANSACTIONS
+    --------------------------------*/
+
+    match /paymentTransactions/{transactionId} {
+
+      allow read: if isAdmin()
+        || resource.data.userId == request.auth.uid;
+
+      allow create: if isAdmin()
+        || request.resource.data.userId == request.auth.uid;
+
+      allow update, delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       INVENTORY TRANSACTIONS
+    --------------------------------*/
+
+    match /inventoryTransactions/{transactionId} {
+
+      allow read: if isAdmin() || isStaff();
+
+      allow create, update, delete: if isAdmin() || isStaff();
+    }
+
+    /* -------------------------------
+       REVIEWS
+    --------------------------------*/
+
+    match /reviews/{reviewId} {
+
+      allow read: if true;
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update, delete: if isAdmin()
+        || resource.data.userId == request.auth.uid;
+    }
+
+    /* -------------------------------
+       ACTIVITY LOGS
+    --------------------------------*/
+
+    match /activityLogs/{logId} {
+
+      allow read: if isAdmin();
+
+      allow create: if isAdmin() || isStaff();
+
+      allow update, delete: if isAdmin();
+    }
+
+    /* -------------------------------
+       ADMIN SETTINGS
+    --------------------------------*/
+
+    match /adminSettings/{settingId} {
+
+      allow read: if isAdmin();
+
+      allow create, update, delete: if isAdmin();
+    }
+
+  }
+}

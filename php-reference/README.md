@@ -1,4 +1,4 @@
-# Baby Shop KE - PHP + MySQL E-Commerce Setup Guide
+# BabyShopKe - PHP + MySQL E-Commerce Setup Guide
 
 ## Prerequisites
 - **XAMPP** (or WAMP/MAMP) with PHP 7.4+ and MySQL 5.7+
@@ -124,6 +124,6 @@ public/
     order_update.php  - Update order status
 
 assets/
-  styles.css          - Complete CSS (Baby Shop KE branded)
+  styles.css          - Complete CSS (BabyShopKe branded)
   app.js              - Minimal JavaScript
 ```

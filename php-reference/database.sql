@@ -1,5 +1,5 @@
 -- ============================================
--- Baby Shop KE E-Commerce Database Schema
+-- BabyShopKe E-Commerce Database Schema
 -- MySQL 5.7+ / MariaDB 10.3+
 -- ============================================
 

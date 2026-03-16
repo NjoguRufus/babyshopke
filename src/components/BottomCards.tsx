@@ -1,12 +1,10 @@
 import { Star } from "lucide-react";
 import giftRegistry from "@/assets/gift-registry.png";
 import happyParents from "@/assets/happy-parents.png";
+import { useNavigate } from "react-router-dom";
 
-interface BottomCardsProps {
-  onGetStarted: () => void;
-}
-
-const BottomCards = ({ onGetStarted }: BottomCardsProps) => {
+const BottomCards = () => {
+  const navigate = useNavigate();
   return (
     <section className="max-w-[1400px] mx-auto px-4 md:px-8 pb-16">
       <div className="grid md:grid-cols-2 gap-6">
@@ -23,9 +21,8 @@ const BottomCards = ({ onGetStarted }: BottomCardsProps) => {
               Create or find a baby gift registry easily.
             </p>
             <button
-              type="button"
-              onClick={onGetStarted}
               className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:brightness-105 hover:shadow-glow-primary transition-all duration-200"
+              onClick={() => navigate("/shop")}
             >
               Get Started
             </button>

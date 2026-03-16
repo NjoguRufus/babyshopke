@@ -2,7 +2,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="<?= SITE_URL ?>/index.php" class="logo">
-                <span class="logo-baby">Baby Shop</span><span class="logo-shop"> KE</span>
+                <span class="logo-baby">Baby</span><span class="logo-shop">ShopKe</span>
             </a>
             <form class="search-bar" action="<?= SITE_URL ?>/index.php" method="GET">
                 <input type="text" name="q" placeholder="Search for products..." value="<?= e($_GET['q'] ?? '') ?>">

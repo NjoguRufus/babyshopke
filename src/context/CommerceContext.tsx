@@ -1,170 +1,163 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getCart, addToCart as svcAddToCart, updateCartItem, removeFromCart } from "../../backend/services/cartService.js";
+import { addToWishlist as svcAddToWishlist, removeFromWishlist as svcRemoveFromWishlist, getWishlist as svcGetWishlist } from "../../backend/services/wishlistService.js";
 
-export type CommerceProduct = {
-  id: number;
+type CartItem = {
+  productId: string;
+  sku: string;
   name: string;
   price: number;
-  image: string;
-};
-
-export type CartProduct = CommerceProduct & {
-  qty: number;
+  quantity: number;
+  image?: string;
+  stockSnapshot?: number;
 };
 
 type CommerceContextValue = {
-  wishlistItems: CommerceProduct[];
-  cartItems: CartProduct[];
-  wishlistCount: number;
-  cartCount: number;
-  cartTotal: number;
-  isWishlistOpen: boolean;
-  isCartOpen: boolean;
-  openWishlist: () => void;
-  closeWishlist: () => void;
+  cartItems: CartItem[];
+  wishlistProductIds: string[];
+  cartOpen: boolean;
+  wishlistOpen: boolean;
+  cartLoading: boolean;
+  wishlistLoading: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addToWishlist: (product: CommerceProduct) => void;
-  removeFromWishlist: (productId: number) => void;
-  toggleWishlist: (product: CommerceProduct) => boolean;
-  isWishlisted: (productId: number) => boolean;
-  isWishlistedByName: (productName: string) => boolean;
-  addToCart: (product: CommerceProduct, qty?: number) => void;
-  removeFromCart: (productId: number) => void;
-  increaseQty: (productId: number) => void;
-  decreaseQty: (productId: number) => void;
-  clearCart: () => void;
-  moveWishlistItemToCart: (productId: number) => void;
+  openWishlist: () => void;
+  closeWishlist: () => void;
+  toggleCart: () => void;
+  addToCart: (item: CartItem) => Promise<void>;
+  updateCartQuantity: (productId: string, quantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
+  toggleWishlist: (productId: string) => Promise<void>;
+  cartCount: number;
+  wishlistCount: number;
 };
 
-const CommerceContext = createContext<CommerceContextValue | null>(null);
+const CommerceContext = createContext<CommerceContextValue | undefined>(undefined);
 
-export const CommerceProvider = ({ children }: { children: ReactNode }) => {
-  const [wishlistItems, setWishlistItems] = useState<CommerceProduct[]>([]);
-  const [cartItems, setCartItems] = useState<CartProduct[]>([]);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+export function CommerceProvider({ children }: { children: ReactNode }) {
+  const { firebaseUser } = useAuth();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [wishlistProductIds, setWishlistProductIds] = useState<string[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
-  const addToWishlist = (product: CommerceProduct) => {
-    setWishlistItems((prev) => {
-      if (prev.some((item) => item.id === product.id)) {
-        return prev;
-      }
-      return [...prev, product];
-    });
-  };
-
-  const removeFromWishlist = (productId: number) => {
-    setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
-  };
-
-  const toggleWishlist = (product: CommerceProduct): boolean => {
-    let wasAdded = false;
-
-    setWishlistItems((prev) => {
-      const exists = prev.some((item) => item.id === product.id);
-      if (exists) {
-        wasAdded = false;
-        return prev.filter((item) => item.id !== product.id);
-      }
-
-      wasAdded = true;
-      return [...prev, product];
-    });
-
-    return wasAdded;
-  };
-
-  const addToCart = (product: CommerceProduct, qty = 1) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + qty } : item,
-        );
-      }
-
-      return [...prev, { ...product, qty: Math.max(1, qty) }];
-    });
-  };
-
-  const removeFromCart = (productId: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== productId));
-  };
-
-  const increaseQty = (productId: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === productId ? { ...item, qty: item.qty + 1 } : item,
-      ),
-    );
-  };
-
-  const decreaseQty = (productId: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === productId ? { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 } : item,
-      ),
-    );
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
-
-  const moveWishlistItemToCart = (productId: number) => {
-    const wishlistItem = wishlistItems.find((item) => item.id === productId);
-    if (!wishlistItem) {
+  // Load cart & wishlist on auth change
+  useEffect(() => {
+    if (!firebaseUser) {
+      setCartItems([]);
+      setWishlistProductIds([]);
       return;
     }
 
-    addToCart(wishlistItem, 1);
-    removeFromWishlist(productId);
+    const userId = firebaseUser.uid;
+    (async () => {
+      setCartLoading(true);
+      setWishlistLoading(true);
+      try {
+        const [cart, wishlist] = await Promise.all([getCart(userId), svcGetWishlist(userId)]);
+        setCartItems(cart.items || []);
+        setWishlistProductIds(wishlist.map((w) => w.productId));
+      } catch (e) {
+        console.error("Failed to load cart/wishlist", e);
+      } finally {
+        setCartLoading(false);
+        setWishlistLoading(false);
+      }
+    })();
+  }, [firebaseUser]);
+
+  const addToCart = async (item: CartItem) => {
+    if (!firebaseUser) return;
+    setCartLoading(true);
+    try {
+      const updated = await svcAddToCart(firebaseUser.uid, item);
+      setCartItems(updated.items || []);
+      setCartOpen(true);
+    } finally {
+      setCartLoading(false);
+    }
   };
 
-  const cartCount = useMemo(
-    () => cartItems.reduce((total, item) => total + item.qty, 0),
-    [cartItems],
-  );
-  const wishlistCount = useMemo(() => wishlistItems.length, [wishlistItems]);
-  const cartTotal = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.price * item.qty, 0),
-    [cartItems],
-  );
-
-  const value: CommerceContextValue = {
-    wishlistItems,
-    cartItems,
-    wishlistCount,
-    cartCount,
-    cartTotal,
-    isWishlistOpen,
-    isCartOpen,
-    openWishlist: () => setIsWishlistOpen(true),
-    closeWishlist: () => setIsWishlistOpen(false),
-    openCart: () => setIsCartOpen(true),
-    closeCart: () => setIsCartOpen(false),
-    addToWishlist,
-    removeFromWishlist,
-    toggleWishlist,
-    isWishlisted: (productId: number) =>
-      wishlistItems.some((item) => item.id === productId),
-    isWishlistedByName: (productName: string) =>
-      wishlistItems.some((item) => item.name === productName),
-    addToCart,
-    removeFromCart,
-    increaseQty,
-    decreaseQty,
-    clearCart,
-    moveWishlistItemToCart,
+  const updateCartQuantityFn = async (productId: string, quantity: number) => {
+    if (!firebaseUser) return;
+    setCartLoading(true);
+    try {
+      const updated = await updateCartItem(firebaseUser.uid, productId, quantity);
+      setCartItems(updated.items || []);
+    } finally {
+      setCartLoading(false);
+    }
   };
+
+  const removeFromCartFn = async (productId: string) => {
+    if (!firebaseUser) return;
+    setCartLoading(true);
+    try {
+      const updated = await removeFromCart(firebaseUser.uid, productId);
+      setCartItems(updated.items || []);
+    } finally {
+      setCartLoading(false);
+    }
+  };
+
+  const toggleWishlistFn = async (productId: string) => {
+    if (!firebaseUser) return;
+    setWishlistLoading(true);
+    try {
+      if (wishlistProductIds.includes(productId)) {
+        await svcRemoveFromWishlist(firebaseUser.uid, productId);
+        setWishlistProductIds((ids) => ids.filter((id) => id !== productId));
+      } else {
+        await svcAddToWishlist(firebaseUser.uid, productId);
+        setWishlistProductIds((ids) => [...ids, productId]);
+        setWishlistOpen(true);
+      }
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const value: CommerceContextValue = useMemo(
+    () => ({
+      cartItems,
+      wishlistProductIds,
+      cartOpen,
+      wishlistOpen,
+      cartLoading,
+      wishlistLoading,
+      openCart: () => setCartOpen(true),
+      closeCart: () => setCartOpen(false),
+      openWishlist: () => setWishlistOpen(true),
+      closeWishlist: () => setWishlistOpen(false),
+      toggleCart: () => setCartOpen((o) => !o),
+      addToCart,
+      updateCartQuantity: updateCartQuantityFn,
+      removeFromCart: removeFromCartFn,
+      toggleWishlist: toggleWishlistFn,
+      cartCount: cartItems.reduce((sum, i) => sum + i.quantity, 0),
+      wishlistCount: wishlistProductIds.length,
+    }),
+    [
+      cartItems,
+      wishlistProductIds,
+      cartOpen,
+      wishlistOpen,
+      cartLoading,
+      wishlistLoading,
+    ],
+  );
 
   return <CommerceContext.Provider value={value}>{children}</CommerceContext.Provider>;
-};
+}
 
-export const useCommerce = (): CommerceContextValue => {
-  const context = useContext(CommerceContext);
-  if (!context) {
-    throw new Error("useCommerce must be used within a CommerceProvider");
+export function useCommerce() {
+  const ctx = useContext(CommerceContext);
+  if (!ctx) {
+    throw new Error("useCommerce must be used within CommerceProvider");
   }
-  return context;
-};
+  return ctx;
+}
+

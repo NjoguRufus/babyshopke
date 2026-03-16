@@ -8,7 +8,7 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <section class="auth-section">
     <div class="auth-card">
-        <h2>Login to Baby Shop KE</h2>
+        <h2>Login to BabyShopKe</h2>
         <form method="POST">
             <?= csrfField() ?>
             <label>Email</label>
